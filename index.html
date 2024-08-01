@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    *, *::before, *::after {
+      padding: 0; margin: 0;
+      box-sizing: border-box;
+    }
+    body {
+      overflow: hidden;
+      width: 100vw; height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+
+  <style>
+    :root {
+      --side: 50px;
+      --offset: calc(var(--side) / (2 * tan(180deg / 5)));
+      --h-row: calc(var(--side) * .4204412811);
+
+      --sqrt3: 1.73205080757;
+      --side-angle: 10.7deg;
+      --penta-angle: 52.6deg;;
+    }
+
+    .d20 {
+      overflow: hidden;
+      width: calc(var(--side) * 2);
+      height: calc(var(--side) * 2);
+
+      perspective: calc(var(--side) * 3);
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotateX(360deg) rotateY(5deg);
+      }
+      100% {
+        transform: rotateX(0deg) rotateY(5deg);
+      }
+    }
+
+    .dice {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform-origin: center;
+      transform: rotateY(5deg);
+      animation: linear rotate infinite 5s;
+    }
+
+    .grid {
+      position: absolute;
+      transform-origin: center;
+      background-image: url(https://www.freeiconspng.com/thumbs/grid-png/grid-png-image-0.png);
+      background-repeat: repeat;
+      background-position: center;
+      opacity: .5;
+      width: 100%; height: 100%;
+    }
+
+    .grid:nth-of-type(2) {
+      transform: rotateY(90deg);
+    }
+    .grid:nth-of-type(3) {
+      transform: rotateX(90deg);
+    }
+
+    section {
+      position: absolute;
+      transform-origin: center;
+      top: 50%; left: 50%;
+      translate: -50% -50%;
+
+      display: grid;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0);
+      font-size: calc(var(--side) * 0.8);
+      
+      /* border-color: transparent transparent black transparent;
+      border-style: solid;
+      height: 0px; width: 0px;
+      border-width: 0px calc(var(--side) / 2) calc(var(--side) * 0.866025) calc(var(--side) / 2); */
+      /* background-color: black; */
+      height: calc(var(--side) * 0.866025); width: var(--side);
+
+      background-image: url('triangle.svg');
+      background-size: 100% 100%;
+    }
+  </style>
+
+  <style>
+    section:nth-of-type(-n + 10) {
+      transform-origin: bottom center;
+    }
+    
+    section:nth-of-type(-2n + 10) {
+      rotate: 180deg;
+    }
+
+    section:nth-of-type(1) {
+      transform:
+        translate3d(0, 0, var(--offset))
+        rotateX(calc(var(--side-angle) * -1));
+    }
+
+    section:nth-of-type(3) {
+      transform:
+        translate3d(
+          calc(var(--offset) * sin(72deg) * -1), 0,
+          calc(var(--offset) * cos(72deg)))
+         rotateY(-72deg) rotateX(calc(var(--side-angle) * -1));
+    }
+
+    section:nth-of-type(5) {
+      transform:
+        translate3d(
+          calc(var(--offset) * cos(54deg) * -1), 0,
+          calc(var(--offset) * sin(54deg) * -1))
+        rotateY(-144deg) rotateX(calc(var(--side-angle) * -1));
+    }
+
+    section:nth-of-type(7) {
+      transform:
+        translate3d(
+          calc(var(--offset) * cos(54deg)), 0,
+          calc(var(--offset) * sin(54deg) * -1))
+        rotateY(144deg) rotateX(calc(var(--side-angle) * -1));
+    }
+
+    section:nth-of-type(9) {
+      transform:
+        translate3d(
+          calc(var(--offset) * sin(72deg)), 0,
+          calc(var(--offset) * cos(72deg)))
+        rotateY(72deg) rotateX(calc(var(--side-angle) * -1));
+    }
+
+    section:nth-of-type(2) {
+      transform: translate3d(0, 98%, calc(var(--offset) * -1))
+         rotateX(var(--side-angle));
+    }
+
+    section:nth-of-type(4) {
+      transform:
+        translate3d(
+          calc(var(--offset) * sin(72deg) * -1), 98%,
+          calc(var(--offset) * cos(72deg) * -1))
+        rotateY(72deg) rotateX(var(--side-angle));
+    }
+
+    section:nth-of-type(6) {
+      transform:
+        translate3d(
+          calc(var(--offset) * cos(54deg) * -1), 98%,
+          calc(var(--offset) * sin(54deg)))
+        rotateY(144deg) rotateX(var(--side-angle));
+    }
+
+    section:nth-of-type(8) {
+      transform:
+        translate3d(
+          calc(var(--offset) * cos(54deg)), 98%,
+          calc(var(--offset) * sin(54deg)))
+        rotateY(-144deg) rotateX(var(--side-angle));
+    }
+
+    section:nth-of-type(10) {
+      transform:
+        translate3d(
+          calc(var(--offset) * sin(72deg)), 98%,
+          calc(var(--offset) * cos(72deg) * -1))
+        rotateY(-72deg) rotateX(var(--side-angle));
+    }
+
+    section:nth-of-type(n + 11) {
+      transform-origin: top center;
+      translate: -50% calc(-50% - 58.6%);
+    }
+
+    section:nth-of-type(11) {
+      transform: rotateY(180deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(12) {
+      transform: rotateY(-108deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(13) {
+      transform: rotateY(-36deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(14) {
+      transform: rotateY(36deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(15) {
+      transform: rotateY(108deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(n + 16) {
+      translate: -50% calc(50% + 60.7%);
+      rotate: 180deg;
+    }
+
+    section:nth-of-type(16) {
+      transform: rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(17) {
+      transform: rotateY(-72deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(18) {
+      transform: rotateY(-144deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(19) {
+      transform: rotateY(144deg) rotateX(var(--penta-angle));
+    }
+
+    section:nth-of-type(20) {
+      transform: rotateY(72deg) rotateX(var(--penta-angle));
+    }
+  </style>
+</head>
+<body>
+  <div class="d20">
+    <div class="dice">
+      <section>1</section>
+      <section>2</section>
+      <section>3</section>
+      <section>4</section>
+      <section>5</section>
+      <section>6</section>
+      <section>7</section>
+      <section>8</section>
+      <section>9</section>
+      <section>10</section>
+
+      <section>11</section>
+      <section>12</section>
+      <section>13</section>
+      <section>14</section>
+      <section>15</section>
+      <section>16</section>
+      <section>17</section>
+      <section>18</section>
+      <section>19</section>
+      <section>20</section>
+    </div>
+  </div>
+</body>
+</html>
